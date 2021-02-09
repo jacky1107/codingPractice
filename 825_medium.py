@@ -1,38 +1,28 @@
+import collections
+
+
 class Solution:
+    def friendRequest(self, a, b):
+        if b <= 0.5 * a + 7: return False
+        if b > a: return False
+        return True
+
     def numFriendRequests(self, ages) -> int:
-        res, point = 0, len(ages)
-        ages = sorted(ages)
-
-        for i in range(len(ages)):
-            if ages[i] >= 100:
-                point = i
-                break
-
-        a, b = ages[:point], ages[point:]
-        a = a[::-1]
-        b = b[::-1]
-        res_a = self.find_request(a)
-        res_b = self.find_request(b)
-        return res_a + res_b
-
-    def find_request(self, ages):
-        res = 0
-        for i in range(len(ages) - 1):
-            for j in range(i + 1, len(ages)):
-                if not self.condition(ages[i], ages[j]):
-                    res += 1
-                if not self.condition(ages[j], ages[i]):
-                    res += 1
-        return res
-
-    def condition(self, a, b):
-        return b <= 0.5 * a + 7
+        total = 0
+        age_groups = collections.Counter(ages)
+        for a, num_a in age_groups.items():
+            for b, num_b in age_groups.items():
+                if self.friendRequest(a, b):
+                    total += num_a * num_b
+                    if a == b: total -= num_a
+        return total
 
 
 if __name__ == "__main__":
-    ages = [16, 17, 18]
     ages = [20, 30, 100, 110, 120]
     ages = [16, 16]
+    ages = [16, 17, 18]
+    ages = [101, 56, 69, 48, 30]
     sol = Solution()
     res = sol.numFriendRequests(ages)
     print(res)
